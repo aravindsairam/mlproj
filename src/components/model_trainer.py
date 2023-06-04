@@ -29,6 +29,7 @@ from src import utils
 class ModelTrainerConfig:
     data_path = "/home/sai/Documents/end_to_end_ML/mlproj/data/"
     trained_model_file = os.path.join(data_path, "model.pkl")
+
     models = {
     "LinearRegression": LinearRegression(),
     "Lasso": Lasso(),
@@ -39,7 +40,39 @@ class ModelTrainerConfig:
     "XGBRegressor": XGBRegressor(),
     "CatBoost Regressor": CatBoostRegressor(verbose=False),
     "AdaBoost Regressor": AdaBoostRegressor(),
-}
+    }
+
+    params={
+            "LinearRegression":{},
+            "Lasso":{
+                'alpha': [0.1, 0.5, 1.0]
+            },
+            "Ridge":{
+                'alpha': [0.1, 0.5, 1.0]
+            },
+            "K-Neighbors Regressor":{
+                'n_neighbors': [2, 5, 10, 15],
+            },
+            "Decision Tree": {
+                'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+            },
+            "Random Forest Regressor":{
+                'n_estimators': [8,16,32,64,128,256]
+            },
+            "XGBRegressor":{
+                'learning_rate':[.1,.01,.05,.001],
+                'n_estimators': [8,16,32,64,128,256]
+            },
+            "CatBoost Regressor":{
+                'depth': [6,8,10],
+                'learning_rate': [0.01, 0.05, 0.1],
+                'iterations': [30, 50, 100]
+            },
+            "AdaBoost Regressor":{
+                'learning_rate':[.1,.01,0.5,.001],
+                'n_estimators': [8,16,32,64,128,256]
+            }        
+        }
 
 class ModelTrainer():
     def __init__(self):
@@ -53,10 +86,11 @@ class ModelTrainer():
                 test_array[:,:-1],
                 test_array[:,-1]
             )
+
             
             logging.info("Evaluating models")
 
-            models_report = utils.evaluate_model(x_train, y_train, x_test, y_test, self.model_trainer_config.models)
+            models_report = utils.evaluate_model(x_train, y_train, x_test, y_test, self.model_trainer_config.models, self.model_trainer_config.params)
 
             best_model_score = max(sorted(models_report.values()))
 
