@@ -163,3 +163,5 @@ cython_debug/
 
 notebooks/catboost_info/
 logs/
+
+catboost_info/
